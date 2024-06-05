@@ -25,11 +25,3 @@ variable "aws_secret_key"{
     default="2Q7BNYQmYEiUcQ4APRY6+Rb7UDvmLTItCn8Z2aos"
 }
 
-variable "aws_access_key"{
-    type = string
-
-}
-
-variable "aws_secret_key"{
-    type=string
-}
