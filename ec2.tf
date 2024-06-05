@@ -16,7 +16,7 @@ data "aws_ami" "ubuntu" {
 
 
 
-data "aws_subnet" "default" {
+/*data "aws_subnet" "default" {
   filter {
     name   = "vpc-id"
     values = [aws_vpc.main.id]
@@ -26,7 +26,7 @@ data "aws_subnet" "default" {
     name   = "default-for-az"
     values = ["true"]
   }
-}
+}*/
 resource "aws_instance" "web" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = var.instance_type 
