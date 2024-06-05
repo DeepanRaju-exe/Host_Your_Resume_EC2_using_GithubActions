@@ -17,6 +17,17 @@ variable "password" {
 
 variable "aws_access_key"{
     type = string
+    default = "AKIAVRUVWGO4FEK54TSK"
+
+}
+
+variable "aws_secret_key"{
+    type=string
+    default="2Q7BNYQmYEiUcQ4APRY6+Rb7UDvmLTItCn8Z2aos"
+}
+
+variable "aws_access_key"{
+    type = string
 
 }
 
