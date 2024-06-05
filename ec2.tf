@@ -13,18 +13,23 @@ data "aws_ami" "ubuntu" {
 
   #owners = ["099720109477"] # Canonical
 }
-resource "aws_key_pair" "deployer" {
-  key_name   = "deployer-key"
-  public_key = var.ppm_key
-}
+
 
 resource "aws_instance" "web" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
-  vpc_security_group_ids = aws_security_group.web_sg.id
-
+  vpc_security_group_ids = [aws_security_group.web_sg.id]
   associate_public_ip_address = true
+  user_data = <<-EOF
+              #!/bin/bash
+              sudo useradd -m -s /bin/bash ${var.username}
+              echo "${var.username}:${var.password}" | sudo chpasswd
+              EOF
   tags = {
     Name = "Resume_Hoster"
   }
+}
+
+output "public_dns" {
+  value = aws_instance.web.public_dns
 }
