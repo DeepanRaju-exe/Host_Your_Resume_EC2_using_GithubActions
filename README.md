@@ -1,1 +1,1 @@
-# Hostt_Your_Resume_EC2_using_GithubActions
+# Host_Your_Resume_EC2_using_GithubActions
