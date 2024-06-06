@@ -91,7 +91,7 @@ jobs:
           with:
               host: ${{ env.SERVER_PUBLIC_IP }}
               username: ${{ secrets.TF_VAR_username }}
-              password: ${{ secrets.TF_VAR_password }}
+              key: ${{ secrets.KEY }}
               script: |
                   sudo apt-get -y update
                   sudo apt-get install -y apache2

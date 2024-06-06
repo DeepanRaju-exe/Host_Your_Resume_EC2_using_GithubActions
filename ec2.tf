@@ -15,8 +15,6 @@ data "aws_ami" "ubuntu" {
 }
 
 
-
-
 /*data "aws_subnet" "default" {
   filter {
     name   = "vpc-id"
@@ -35,6 +33,7 @@ resource "aws_instance" "web" {
   vpc_security_group_ids = [aws_security_group.web_sg.id] 
   #subnet_id     = aws_subnet.example.id
   #vpc_security_group_ids = [aws_security_group.web_sg.id]
+  key_name = "new"
   associate_public_ip_address = true
   user_data = <<-EOF
               #!/bin/bash
