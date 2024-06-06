@@ -54,30 +54,33 @@ jobs:
         TF_VAR_username: ${{ secrets.TF_VAR_username }}
         TF_VAR_password: ${{ secrets.TF_VAR_password }}
       run: terraform apply -auto-approve -input=false -var="aws_access_key=${{ secrets.TF_VAR_aws_access_key }}" -var="aws_secret_key=${{ secrets.TF_VAR_aws_secret_key }}" -var="username=${{ secrets.TF_VAR_username }}" -var="password=${{ secrets.TF_VAR_password }}"
+    - name: Output EC2 Public IP
+      id: output_ip
+      run: echo "::set-output name=public_ip::$(terraform output -raw public_ip)"  
 
   deploy:
-    name: Deploy to EC2 on main branch push
-    runs-on: ubuntu-latest
-    needs: terraform
-
-    steps:
-      - name: Checkout the files
-        uses: actions/checkout@v2
-
-      - name: Output EC2 Public IP
-        id: output_ip
-        run: echo "public_ip=$(terraform output -json public_ip | jq -r '.')" >> $GITHUB_ENV
-
-      - name: Executing remote SSH commands using username and password
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ env.public_ip }}
-          username: ${{ secrets.TF_VAR_username }}
-          password: ${{ secrets.TF_VAR_password }}
-          script: |
-            sudo apt-get -y update
-            sudo apt-get install -y apache2
-            sudo systemctl start apache2
-            sudo systemctl enable apache2
-            cd /home/${{ secrets.TF_VAR_username }}
-            sudo mv * /var/www/html
+      name: Deploy to EC2 on main branch push
+      runs-on: ubuntu-latest
+      needs: terraform
+    
+      steps:
+        - name: Checkout the files
+          uses: actions/checkout@v2
+    
+        - name: Get EC2 Public IP
+          id: get_ip
+          run: echo "EC2_PUBLIC_IP=${{ needs.terraform.outputs.public_ip }}" >> $GITHUB_ENV
+    
+        - name: Executing remote SSH commands using username and password
+          uses: appleboy/ssh-action@master
+          with:
+            host: ${{ env.EC2_PUBLIC_IP }}
+            username: ${{ secrets.TF_VAR_username }}
+            password: ${{ secrets.TF_VAR_password }}
+            script: |
+              sudo apt-get -y update
+              sudo apt-get install -y apache2
+              sudo systemctl start apache2
+              sudo systemctl enable apache2
+              cd /home/${{ secrets.TF_VAR_username }}
+              sudo mv * /var/www/html
