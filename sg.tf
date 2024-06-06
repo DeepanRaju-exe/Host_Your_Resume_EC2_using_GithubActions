@@ -1,12 +1,21 @@
 data "aws_vpc" "default" {
   default = true
 }
-data "aws_subnet_ids" "default" {
-  vpc_id = data.aws_vpc.default.id
-}
 
+// Fetch the default subnet
 data "aws_subnet" "default" {
-  id = data.aws_subnet_ids.default.ids[0]
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+
+  filter {
+    name   = "default-for-az"
+    values = ["true"]
+  }
+
+  // Using availability zone to ensure it picks the correct subnet
+  availability_zone = "us-east-1a"
 }
 
 /*resource "aws_subnet" "example" {
