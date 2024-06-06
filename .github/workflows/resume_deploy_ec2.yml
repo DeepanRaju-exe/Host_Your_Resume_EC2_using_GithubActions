@@ -60,7 +60,7 @@ jobs:
     - name: Setting output
       id: set-ip
       run: |-
-       echo ""::set-output name=public_ip::${terraform output public_ip}"
+       echo "::set-output name=public_ip::${terraform output public_ip}"
 
     - name: Output EC2 Public IP
       id: output_ip
