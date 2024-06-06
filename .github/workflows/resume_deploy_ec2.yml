@@ -12,7 +12,7 @@ jobs:
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
-    environment: production
+    environment: production 
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -62,7 +62,7 @@ jobs:
        #echo "::set-output name=public_ip::${terraform output -raw public_ip}"
       run: echo "PUBLIC_IP=${terraform output -raw public_ip}" >> $GITHUB_OUTPUT
     outputs:
-      SERVER_PUBLIC_IP: ${{ steps.set-ip.outputs.public_ip }}
+      SERVER_PUBLIC_IP: ${{ steps.set-ip.outputs.PUBLIC_IP }}
 
     #- name: Output EC2 Public IP
       #id: output_ip
