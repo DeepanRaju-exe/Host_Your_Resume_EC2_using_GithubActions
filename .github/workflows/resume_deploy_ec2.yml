@@ -45,7 +45,7 @@ jobs:
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
-      run: terraform plan -input=false -var="aws_access_key=${{ secrets.TF_VAR_aws_access_key }}" -var="aws_secret_key=${{ secrets.TF_VAR_aws_secret_key }}"
+      run: terraform plan -input=false -var="aws_access_key=${{ secrets.TF_VAR_aws_access_key }}" -var="aws_secret_key=${{ secrets.TF_VAR_aws_secret_key }}" -var="username=${{ secrets.TF_VAR_username }}" -var="password=${{ secrets.TF_VAR_password }}"
 
     # On push to "main", build or change infrastructure according to Terraform configuration files
     - name: Terraform Apply
@@ -53,24 +53,31 @@ jobs:
       env:
         TF_VAR_username: ${{ secrets.TF_VAR_username }}
         TF_VAR_password: ${{ secrets.TF_VAR_password }}
-      run: terraform apply -auto-approve -input=false -var="aws_access_key=${{ secrets.TF_VAR_aws_access_key }}" -var="aws_secret_key=${{ secrets.TF_VAR_aws_secret_key }}"
+      run: terraform apply -auto-approve -input=false -var="aws_access_key=${{ secrets.TF_VAR_aws_access_key }}" -var="aws_secret_key=${{ secrets.TF_VAR_aws_secret_key }}" -var="username=${{ secrets.TF_VAR_username }}" -var="password=${{ secrets.TF_VAR_password }}"
 
-    # Get the public DNS of the EC2 instance
-    - name: Get EC2 Public DNS
-      id: get_dns
-      run: echo "::set-output name=dns::$(terraform output -json public_dns | jq -r '.')"
+  deploy:
+    name: Deploy to EC2 on main branch push
+    runs-on: ubuntu-latest
+    needs: terraform
 
-    # SSH into the EC2 instance and deploy the application using username and password authentication
-    - name: Executing remote SSH commands using username and password
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ steps.get_dns.outputs.dns }}
-        username: ${{ secrets.TF_VAR_username }}
-        password: ${{ secrets.TF_VAR_password }}
-        script: |
-          sudo apt-get -y update
-          sudo apt-get install -y apache2
-          sudo systemctl start apache2
-          sudo systemctl enable apache2
-          cd /home/${{ secrets.TF_VAR_username }}
-          sudo mv * /var/www/html
+    steps:
+      - name: Checkout the files
+        uses: actions/checkout@v2
+
+      - name: Get EC2 Public IP
+        id: get_ip
+        run: echo "::set-output name=ip::${{ needs.terraform.outputs.public_ip }}"
+
+      - name: Executing remote SSH commands using username and password
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ steps.get_ip.outputs.ip }}
+          username: ${{ secrets.TF_VAR_username }}
+          password: ${{ secrets.TF_VAR_password }}
+          script: |
+            sudo apt-get -y update
+            sudo apt-get install -y apache2
+            sudo systemctl start apache2
+            sudo systemctl enable apache2
+            cd /home/${{ secrets.TF_VAR_username }}
+            sudo mv * /var/www/html
