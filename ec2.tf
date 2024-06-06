@@ -31,7 +31,7 @@ data "aws_ami" "ubuntu" {
 resource "aws_instance" "web" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = var.instance_type 
-  subnet_id     = aws_subnet.example.id
+  #subnet_id     = aws_subnet.example.id
   vpc_security_group_ids = [aws_security_group.web_sg.id]
   associate_public_ip_address = true
   user_data = <<-EOF
