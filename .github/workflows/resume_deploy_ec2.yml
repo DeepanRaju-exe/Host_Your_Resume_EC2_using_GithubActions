@@ -99,8 +99,8 @@ jobs:
                   sudo apt-get install -y git
                   cd /home/${{ secrets.TF_VAR_username }}
                   git clone https://github.com/DeepanRaju-exe/Host_Your_Resume_EC2_using_GithubActions.git
-                  cd /home/${{ secrets.TF_VAR_username }}/Host_Your_Resume_EC2_Using_GithubActions/
-                  sudo chmod 777 /home/${{ secrets.TF_VAR_username }}/Host_Your_Resume_EC2_Using_GithubActions/*
+                  cd /home/${{ secrets.TF_VAR_username }}/Host_Your_Resume_EC2_using_GithubActions/
+                  sudo chmod 777 /home/${{ secrets.TF_VAR_username }}/Host_Your_Resume_EC2_using_GithubActions/*
                   sudo chmod 777 /var/www/html/*
                   sudo rm /var/www/html/*
-                  sudo mv /home/${{ secrets.TF_VAR_username }}/Host_Your_Resume_EC2_Using_GithubActions/* /var/www/html/
+                  sudo mv /home/${{ secrets.TF_VAR_username }}/Host_Your_Resume_EC2_using_GithubActions/* /var/www/html/
