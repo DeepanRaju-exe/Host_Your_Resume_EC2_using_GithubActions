@@ -60,8 +60,7 @@ jobs:
       id: set-ip
       #run: |-
        #echo "::set-output name=public_ip::${terraform output -raw public_ip}"
-      run:
-        echo "public_ip=${terraform output -raw public_ip}" >> $GITHUB_OUTPUT
+      run: echo "PUBLIC_IP=${terraform output -raw public_ip}" >> $GITHUB_OUTPUT
     outputs:
       SERVER_PUBLIC_IP: ${{ steps.set-ip.outputs.public_ip }}
 
