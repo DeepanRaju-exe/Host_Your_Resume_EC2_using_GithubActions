@@ -64,14 +64,14 @@ jobs:
       - name: Checkout the files
         uses: actions/checkout@v2
 
-      - name: Get EC2 Public IP
-        id: get_ip
-        run: echo "::set-output name=ip::${{ needs.terraform.outputs.public_ip }}"
+      - name: Output EC2 Public IP
+        id: output_ip
+        run: echo "public_ip=$(terraform output -json public_ip | jq -r '.')" >> $GITHUB_ENV
 
       - name: Executing remote SSH commands using username and password
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ steps.get_ip.outputs.ip }}
+          host: ${{ env.public_ip }}
           username: ${{ secrets.TF_VAR_username }}
           password: ${{ secrets.TF_VAR_password }}
           script: |
