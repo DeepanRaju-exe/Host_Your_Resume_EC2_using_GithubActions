@@ -1,5 +1,12 @@
-resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
+data "aws_vpc" "default" {
+  default = true
+}
+data "aws_subnet_ids" "default" {
+  vpc_id = data.aws_vpc.default.id
+}
+
+data "aws_subnet" "default" {
+  id = data.aws_subnet_ids.default.ids[0]
 }
 
 /*resource "aws_subnet" "example" {
@@ -12,7 +19,7 @@ resource "aws_vpc" "main" {
 resource "aws_security_group" "web_sg" {
   name        = "web_sg"
   description = "Security group for web servers"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = data.aws_vpc.default.id
 
   # Inbound rules
   ingress {
