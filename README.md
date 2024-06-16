@@ -18,13 +18,13 @@ Terraform is used to provision the necessary AWS resources:
 
 Key Terraform files:
 
- provider.tf: Defines the AWS provider.
+ 1. provider.tf: Defines the AWS provider.
  
- ec2.tf: Configures the EC2 instance.
+ 2. ec2.tf: Configures the EC2 instance.
  
- sg.tf: Sets up the security group.
+ 3. sg.tf: Sets up the security group.
  
- variables.tf: Declares the variables used in the Terraform configuration.
+ 4. variables.tf: Declares the variables used in the Terraform configuration.
  
 
 # CI/CD Pipeline
